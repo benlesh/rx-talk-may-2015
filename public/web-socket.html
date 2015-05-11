@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Socket Example</title>
+
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/rxjs/dist/rx.all.js"></script>
+  <script src="bower_components/rx-dom/dist/rx.dom.js"></script>
+  <script src="bower_components/rx-socket-subject/dist/rx-socket-subject.js"></script>
+  <script src="babel/browser.js"></script>
+  <script src="web-socket.js" type="text/babel"></script>
+</head>
+<body>
+  <h3>Multiplexed Web Socket Example</h3>
+
+  <ul>
+    <li><label><input type="checkbox" class="stream-option" value="thinkers"> people thinking about this talk</label></li>
+    <li><label><input type="checkbox" class="stream-option" value="phone_users"> people checking their phone to see if the internet has changed in the last 5 minutes</label></li>
+    <li><label><input type="checkbox" class="stream-option" value="leg_crossers"> people who have to pee</label></li>
+  </ul>
+
+  <div id="results"></div>
+</body>
+</html>

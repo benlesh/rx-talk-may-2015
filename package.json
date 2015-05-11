@@ -1,0 +1,19 @@
+{
+  "name": "rx-talk-may-2015",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.12.3",
+    "express-ws": "^0.2.6",
+    "rx": "^2.5.2"
+  },
+  "devDependencies": {
+    "babel-core": "^5.2.17"
+  }
+}
