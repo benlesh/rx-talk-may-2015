@@ -40,15 +40,15 @@ var streams = {
 };
 
 rx.Observable.interval(1000)
-  .map(function(x) { return Math.round(20 + (Math.sin(x) * 20)); })
+  .map(function(x) { return 20 + Math.round(Math.sin(x * .1) * 20); })
   .subscribe(thinkers);
 
 rx.Observable.interval(1000)
-  .map(function(x) { return Math.round(30 + (Math.cos(x) * 30)); })
+  .map(function(x) { return 30 + Math.round(Math.cos(x * .1) * 30); })
   .subscribe(phone_users);
 
 rx.Observable.interval(1000)
-  .map(function(x) { return Math.round(10 + (Math.tan(x) * 10)); })
+  .map(function(x) { return 10 + Math.round(Math.sin((52 + x) * .12) * 10); })
   .subscribe(leg_crossers);
 
 
