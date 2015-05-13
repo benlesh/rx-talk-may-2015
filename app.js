@@ -66,9 +66,8 @@ app.ws('/talk_people', function(ws) {
 
   ws.on('message', function(msg) {
     var data = JSON.parse(msg);
-    var parts = data.split(':');
-    var type = parts[0];
-    var key = parts[1];
+    var key = data.key;
+    var type = data.type;
     if(type === 'sub') {
       subscriptions[key] = streams[key]
         .map(function(value) { return { key: key, value: value }; })

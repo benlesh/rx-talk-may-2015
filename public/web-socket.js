@@ -15,28 +15,40 @@ var thinkersChecked = Rx.Observable.fromEvent($('input[value="thinkers"]'), 'cha
 var phoneUsersChecked = Rx.Observable.fromEvent($('input[value="phone_users"]'), 'change');
 var legCrossersChecked = Rx.Observable.fromEvent($('input[value="leg_crossers"]'), 'change');
 
+var exponent = 0;
+
 // merge them together
 Rx.Observable.merge(thinkersChecked, phoneUsersChecked, legCrossersChecked)
   // filter out events where the checkbox is *not* checked
   .filter(e => e.target.checked)
-  // map it to the value (the key we use to subscribe)
+  // map it to the value (the key we use to subscribe/unsubscribe)
   .map(e => e.target.value)
   // flatMap to a multiplexed socket data stream!
-  .flatMap(key => multiplexer(`sub:${key}`, `unsub:${key}`, request => ((data) => data.key === request.key))
-    // but only take them until the checkbox is unchecked
-    .takeUntil(Rx.Observable.fromEvent($(`input[value="${key}"]`), 'change').take(1)))
-
-  // ADDED FUN: uncomment to see a group and scan!
-  // // group into grouped observables by the key
-  // .groupBy(x => x.key)
-  // // flat map because we're going to scan these into arrays and get them back out
-  // .flatMap(g => 
-  //    // scan the grouped observable and build an array of no more than 20 values
-  //    g.scan([], (s, d) => (s.push(d.value), s.slice(s.length - 20, s.length)))
-  //    // map to reattach the key to the array of values
-  //   .map(s => ({ key: g.key, value: s })))
-
-  .subscribe(({ key, value}) => {
-    $('.results-' + key).text(value);
-  }, console.error.bind(console));
+  .flatMap(key => multiplexer(
+    // our subscription message
+    { type: 'sub', key: key }, 
+    // our unsubscription message
+    { type: 'unsub', key: key }, 
+    // a filter to select the data for this stream
+    request => ((data) => data.key === request.key))
+      // but only take them until the checkbox is unchecked
+      .takeUntil(Rx.Observable.fromEvent($(`input[value="${key}"]`), 'change').take(1))
+      // if the stream errors retry when...
+      .retryWhen(errors => {
+        if(window.onLine) {
+          // if we're online, try an exponential step back
+          return Rx.Observable.timer(Math.min(30000, Math.pow(2, exponent++) + 100));
+        } else {
+          // if we're offline, wait for the network to come back
+          return Rx.Observable.fromEvent(window, 'online').take(1);
+        }
+      })
+      // if we get a successful message, reset our exponent for retry step back
+      .do(() => exponent = 0))
+  // finally subscribe to the whole thing to wire it up
+  .subscribe(
+    // each successful message, update the DOM
+    ({ key, value }) => $('.results-' + key).text(value),
+    // on error, log it out
+    (err) => console.error(err));
 
