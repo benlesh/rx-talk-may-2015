@@ -1,10 +1,19 @@
 var endpoints = Rx.Observable.just('ws://localhost:3000/talk_people');
 
+// Create some observers so we can see when we open and close the socket.
 var closes = new Rx.Subject();
-closes.subscribe(x => console.info('socket closed'));
+closes.subscribe(x => {
+  $('.socket-status').text('closed');
+  $('.socket-spinner').hide();
+  console.info('socket closed')
+});
 
 var opens = new Rx.Subject();
-opens.subscribe(x => console.info('socket opened'));
+opens.subscribe(x => {
+  $('.socket-status').text('open');
+  $('.socket-spinner').show();
+  console.info('socket opened')
+});
 
 var socket = new RxSocketSubject({ connections: endpoints, closingObserver: closes, openObserver: opens });
 
@@ -43,9 +52,15 @@ Rx.Observable.merge(thinkersChecked, phoneUsersChecked, legCrossersChecked)
           return Rx.Observable.fromEvent(window, 'online').take(1);
         }
       })
+      // finally remove the spinner when the stream ends
+      .finally(() => (console.log(key), $('.spinner-' + key).hide()))
       // if we get a successful message, reset our exponent for retry step back
       .do(() => exponent = 0))
-  // finally subscribe to the whole thing to wire it up
+      // also let's log out successful messages, just because
+      .do(({ key, value }) => console.log('%s: %s', key, value))
+      // show a spinner for the stream
+      .do(({ key }) => $('.spinner-' + key).show())
+  // now subscribe to the whole thing to wire it up
   .subscribe(
     // each successful message, update the DOM
     ({ key, value }) => $('.results-' + key).text(value),

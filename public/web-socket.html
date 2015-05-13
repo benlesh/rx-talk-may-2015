@@ -4,23 +4,48 @@
   <meta charset="UTF-8">
   <title>Web Socket Example</title>
   <link rel="stylesheet" href="bower_components/epoch/epoch.min.css"/>
-  <script src="bower_components/d3/d3.min.js"></script>
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="bower_components/epoch/epoch.min.js"></script>
   <script src="bower_components/rxjs/dist/rx.all.js"></script>
   <script src="bower_components/rx-dom/dist/rx.dom.js"></script>
   <script src="bower_components/rx-socket-subject/dist/rx-socket-subject.js"></script>
   <script src="babel/browser.js"></script>
   <script src="web-socket.js" type="text/babel"></script>
   <style>
-  #line-chart {
-    height: 300px;
-  }
+    body {
+      font-family: Helvetica, Sans-Serif;
+    }
+
+    .result {
+      width: 100px;
+      height: auto;
+      float: left;
+      padding: 5px;
+      margin: 8px;
+      box-sizing: border-box;
+      border: 4px solid lightgray;
+      position: relative;
+    }
+
+    .result-data {
+      display: inline-block;
+      line-height: 100px;
+      font-size: 75px;
+      width: 100%;
+      text-align: right;
+    }
+
+    .spinner {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
   </style>
 </head>
 <body>
   <h3>Multiplexed Web Socket Example</h3>
 
+  <sub>(This information gathered from super-secret NSA projects involving your smartphones)</sub>
+  
   <p>Recieve real-time info for people: </p>
 
   <p>
@@ -33,19 +58,24 @@
    <label><input type="checkbox" class="stream-option" value="leg_crossers"> have to pee</label>
   </p>
 
+  <h4>Web Socket: <span class="socket-status">closed</span> <img src="ajax-loader.gif" alt="socket open" class="socket-spinner" style="display:none;"/></h4>
+
   <div class="result">
-    Thinking about the talk:
-    <div class="results-thinkers">23</div>
+    Thinking about talk:
+    <img src="ajax-loader.gif" alt="streaming" class="spinner spinner-thinkers" style="display:none;"/>
+    <div class="result-data results-thinkers">23</div>
   </div>
 
   <div class="result">
     Using their phones:
-    <div class="results-phone_users">15</div>
+    <img src="ajax-loader.gif" alt="streaming" class="spinner spinner-phone_users" style="display:none;"/>
+    <div class="result-data results-phone_users">15</div>
   </div>
 
   <div class="result">
-    Have to pee:
-    <div class="results-leg_crossers">3</div>
+    Have to go potty:
+    <img src="ajax-loader.gif" alt="streaming" class="spinner spinner-leg_crossers" style="display:none;"/>
+    <div class="result-data results-leg_crossers">3</div>
   </div>
 
   <div>

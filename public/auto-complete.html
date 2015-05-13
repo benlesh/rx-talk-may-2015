@@ -8,10 +8,15 @@
   <script src="bower_components/rx-dom/dist/rx.dom.js"></script>
   <script src="babel/browser.js"></script>
   <script src="auto-complete.js" type="text/babel"></script>
+  <style>
+    .loading {
+      background: url('ajax-loader.gif') no-repeat right center;
+    }
+  </style>
 </head>
 <body>
   <h3>Typical Boring Auto-Complete Example</h3>
-  <input type="text" id="q" name="q"/>
+  <input type="text" id="q" name="q" autocomplete="off"/>
   <ul id="results"></ul>
 </body>
 </html>

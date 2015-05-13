@@ -1,0 +1,22 @@
+{
+  "name": "rx-talk-may-2015",
+  "version": "0.0.0",
+  "authors": [
+    "Ben Lesh <blesh@netflix.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "rx-dom": "~5.0.4",
+    "rxjs": "~2.5.2",
+    "rx-socket-subject": "~0.6.5"
+  }
+}
