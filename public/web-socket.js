@@ -19,15 +19,10 @@ var socket = new RxSocketSubject({ connections: endpoints, openObserver: opens, 
 
 var multiplexer = socket.multiplex();
 
-// make an observable of each checkbox's change events
-var thinkersChecked = Rx.Observable.fromEvent($('input[value="thinkers"]'), 'change');
-var phoneUsersChecked = Rx.Observable.fromEvent($('input[value="phone_users"]'), 'change');
-var legCrossersChecked = Rx.Observable.fromEvent($('input[value="leg_crossers"]'), 'change');
-
 var exponent = 0;
 
-// merge them together
-Rx.Observable.merge(thinkersChecked, phoneUsersChecked, legCrossersChecked)
+// any time one of my checkboxes changes
+Rx.Observable.fromEvent($('.stream-option'), 'change')
   // filter out events where the checkbox is *not* checked
   .filter(e => e.target.checked)
   // map it to the value (the key we use to subscribe/unsubscribe)
@@ -44,8 +39,8 @@ Rx.Observable.merge(thinkersChecked, phoneUsersChecked, legCrossersChecked)
       .retryWhen(errors => errors.flatMap(error => {
         $('.spinner-' + key).hide();
         if(window.navigator.onLine) {
-          // if we're online, try an exponential step back
-          var delay = Math.min(30000, Math.pow(2, exponent++) + 100);
+          // if we're online, try an exponential step back up to 5 seconds
+          var delay = Math.min(5000, Math.pow(2, exponent++) + 100);
           console.warn('retry in ' + delay + ' ms');
           return Rx.Observable.timer(delay);
         } else {
@@ -55,14 +50,14 @@ Rx.Observable.merge(thinkersChecked, phoneUsersChecked, legCrossersChecked)
       }))
       // but only take them until the checkbox is unchecked
       .takeUntil(Rx.Observable.fromEvent($(`input[value="${key}"]`), 'change').take(1))
+      // show a spinner for the stream
+      .do(({ key }) => $('.spinner-' + key).show())
       // finally remove the spinner when the stream ends
-      .finally(() => (console.log(key), $('.spinner-' + key).hide())))
+      .finally(() => $('.spinner-' + key).hide()))
   // if we get a successful message, reset our exponent for retry step back
   .do(() => exponent = 0)
   // also let's log out successful messages, just because
   .do(({ key, value }) => console.log('%s: %s', key, value))
-  // show a spinner for the stream
-  .do(({ key }) => $('.spinner-' + key).show())
   // now subscribe to the whole thing to wire it up
   .subscribe(
     // each successful message, update the DOM
